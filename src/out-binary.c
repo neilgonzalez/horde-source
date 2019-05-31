@@ -161,6 +161,7 @@ binary_out_banner(struct Output *out, FILE *fp, time_t timestamp,
     /* Banner */
     memcpy(foo+i+14, px, length);
 
+    printf("write here...\n");
 
     bytes_written = fwrite(&foo, 1, length+i+HeaderLength, fp);
     if (bytes_written != length+i+HeaderLength) {

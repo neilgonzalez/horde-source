@@ -62,6 +62,7 @@
 #include "read-service-probes.h"
 #include "misc-rstfilter.h"
 #include "util-malloc.h"
+#include "sendtodata.h"
 
 #include <assert.h>
 #include <limits.h>
@@ -1502,6 +1503,14 @@ int main(int argc, char *argv[])
         for (i=1; i<(unsigned)argc; i++) {
             if (strcmp(argv[i], "--nobacktrace") == 0)
                 is_backtrace = 0;
+
+            else if(strcmp(argv[i], "+") ==0) { 
+                placeinclude(argv[i]);
+            }
+            else if (strcmp(argv[i], "-") == 0 ) { 
+                placenoincludes(argv[i]);
+            }
+       
         }
         if (is_backtrace)
             pixie_backtrace_init(argv[0]);

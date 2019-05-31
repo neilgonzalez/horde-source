@@ -3,7 +3,6 @@
 #include "masscan-app.h"
 #include "masscan-status.h"
 #include "unusedparm.h"
-
 #include <ctype.h>
 
 /****************************************************************************
@@ -74,6 +73,8 @@ text_out_banner(struct Output *out, FILE *fp, time_t timestamp,
         masscan_app_to_string(proto),
         normalize_string(px, length, banner_buffer, sizeof(banner_buffer))
         );
+
+    
 }
 
 

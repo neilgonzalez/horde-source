@@ -42,7 +42,7 @@
 #include "pixie-file.h"
 #include "pixie-sockets.h"
 #include "util-malloc.h"
-
+#include "sendtodata.h"
 #include <limits.h>
 #include <ctype.h>
 #include <string.h>
@@ -735,7 +735,9 @@ output_report_status(struct Output *out, time_t timestamp, int status,
                         mac[0], mac[1], mac[2], mac[3], mac[4], mac[5],
                         oui_from_mac(mac)
                         );
+            
             break;
+        //Output tcp port host results to terminal
         default:
             count = fprintf(stdout, "Discovered %s port %u/%s on %u.%u.%u.%u",
                         status_string(status),
@@ -746,6 +748,7 @@ output_report_status(struct Output *out, time_t timestamp, int status,
                         (ip>> 8)&0xFF,
                         (ip>> 0)&0xFF
                         );
+        
         }
 
         /* Because this line may overwrite the "%done" status line, print
@@ -862,6 +865,8 @@ output_report_banner(struct Output *out, time_t now,
         unsigned count;
         char banner_buffer[4096];
 
+//continue as normal if there are no banner filters
+if(is_empty_includes()) { 
         count = fprintf(stdout, "Banner on port %u/%s on %u.%u.%u.%u: [%s] %s",
             port,
             name_from_ip_proto(ip_proto),
@@ -872,7 +877,7 @@ output_report_banner(struct Output *out, time_t now,
             masscan_app_to_string(proto),
             normalize_string(px, length, banner_buffer, sizeof(banner_buffer))
             );
-
+     
         /* Because this line may overwrite the "%done" status line, print
          * some spaces afterward to completely cover up the line */
         if (count < 80)
@@ -881,6 +886,14 @@ output_report_banner(struct Output *out, time_t now,
                     "                                          ");
 
         fprintf(stdout, "\n");
+    }
+//if filters have been applied
+    else if (!is_empty_includes()) { 
+        if(is_in_includes(normalize_string(px, length, 
+            banner_buffer, sizeof(banner_buffer))) ) {
+                printf("%s\n", (normalize_string(px, length, 
+            banner_buffer, sizeof(banner_buffer))));
+        }
     }
 
     /* If not outputing to a file, then don't do anything */
